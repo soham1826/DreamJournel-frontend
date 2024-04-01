@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 
 
 type InputProps = {
-  length?: number;
+  length: number;
   onComplete: (pin: string) => void;
   email:string;
 };
