@@ -2,9 +2,8 @@
 import { Link, useNavigate } from "react-router-dom"
 import Inputs from "./nested/Inputs"
 import { useState } from "react"
-import axios, { AxiosError } from "axios"
+import axios from "axios"
 import {BACKEND_URL} from "../../config"
-import Verify from "./Verify";
 
 type signUpInputs = {
     name:string,
