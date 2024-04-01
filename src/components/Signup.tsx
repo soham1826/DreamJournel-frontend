@@ -19,16 +19,20 @@ const[inputs,setInputs] = useState<signUpInputs>({
     email:"",
     password:""
 })
-const[verifyView , setVerifyView]  = useState<boolean>(false);
-const[currentOTP , setCurrentOTP]  = useState<string>("");
+// const[verifyView , setVerifyView]  = useState<boolean>(false);
+// const[currentOTP , setCurrentOTP]  = useState<string>("");
 
 const  handleSignup = async()=>{
     try {
         const res = await axios.post(`${BACKEND_URL}/register/`,inputs)
         if(res){
-           setVerifyView(true);
-           setCurrentOTP(res.data.otp)
-           console.log("Signup successfull")
+            sessionStorage.setItem("VerifyOtp",res.data.otp)
+            localStorage.setItem("user",JSON.stringify({
+                email:res.data.email,
+                name:res.data.name
+            }))
+            console.log("Signup successfull")
+            navigate("/verify");
         }
          
     } catch (error) {
@@ -37,32 +41,11 @@ const  handleSignup = async()=>{
     
 }
 
-const handleOtp = async(pin:string)=>{
-    try {
-        const res = await axios.post("https://apidreamjournal.pythonanywhere.com/api/verify/",{
-            email:inputs.email,
-            otp:parseInt(pin)
-        })
-        if(res){
-            console.log(res.data.msg)
-            navigate("/");
 
-        }
-    } catch (error:any){
-        let msg = "eroor occured"
-        if (error.response && error.response.data && error.response.data.message) {
-        msg = error.response.data.message;
-        } else if (error.message) {
-        msg = error.message;
-        }
-
-    console.log(msg);
-    }
-}
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
-        {verifyView ? <Verify onComplete={handleOtp}length={4} email={inputs.email} />:<div className=" flex flex-col justify-center items-center h-full max-w-4xl gap-3">
+        <div className=" flex flex-col justify-center items-center h-full max-w-4xl gap-3">
             <div className="text-4xl font-bold">Create an account</div>
            <Inputs label="Your name" placeholder="John" onChange={(e)=>{
             setInputs({
@@ -91,7 +74,7 @@ const handleOtp = async(pin:string)=>{
            </button>
            <p>Already a Dreamer ? <Link to={"/signin"} className=" underline" >Login</Link></p>
             
-        </div> }
+        </div> 
     </div>
   )
 }
